@@ -33,10 +33,11 @@ const WorkflowProcessor = ({
   onStepChange
 }: WorkflowProcessorProps) => {
   const [steps, setSteps] = useState<WorkflowStep[]>([
-    { id: 1, name: "Data Validation", description: "Validating data format and integrity", status: "idle", progress: 0 },
-    { id: 2, name: "Data Transformation", description: "Converting data to required format", status: "idle", progress: 0 },
-    { id: 3, name: "System Integration", description: "Sending data to external systems", status: "idle", progress: 0 },
-    { id: 4, name: "Report Generation", description: "Creating summary reports", status: "idle", progress: 0 },
+    { id: 1, name: "Fetching Fresh Desk Data", description: "Retrieving current data from Fresh Desk API", status: "idle", progress: 0 },
+    { id: 2, name: "Comparing Upload to Fresh Desk", description: "Analyzing differences between uploaded and existing data", status: "idle", progress: 0 },
+    { id: 3, name: "Generating New Tickets", description: "Creating new tickets based on analysis", status: "idle", progress: 0 },
+    { id: 4, name: "Generating Child Tickets", description: "Creating related child tickets", status: "idle", progress: 0 },
+    { id: 5, name: "Generating Report", description: "Creating summary report of all actions", status: "idle", progress: 0 },
   ]);
   
   const [currentStepId, setCurrentStepId] = useState<number | null>(null);
