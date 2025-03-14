@@ -155,7 +155,7 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
   if (!isActive) return null;
 
   return (
-    <div className="space-y-4 mt-4">
+    <div className="space-y-4">
       <div className="flex flex-col space-y-2">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-700">Data Processing Workflow</h2>

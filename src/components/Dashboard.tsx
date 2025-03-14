@@ -77,7 +77,7 @@ const Dashboard = () => {
           {data.length === 0 ? (
             <FileDropZone onFileLoaded={handleFileUpload} isLoading={isLoading} setIsLoading={setIsLoading} />
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-gray-700">Data Preview</h2>
                 <button
@@ -93,8 +93,17 @@ const Dashboard = () => {
                   Upload New File
                 </button>
               </div>
+              
               <DataTable data={filteredData} columns={columns} />
-              <WorkflowProcessor data={data} isActive={showWorkflow} />
+              
+              {/* Always render WorkflowProcessor when data exists */}
+              {data.length > 0 && (
+                <Card className="mt-6 border border-gray-200 shadow-sm">
+                  <CardContent className="p-6">
+                    <WorkflowProcessor data={data} isActive={true} />
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
         </CardContent>
