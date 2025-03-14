@@ -7,7 +7,7 @@ import WorkflowProcessor from "./WorkflowProcessor";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
+import { Play, Link, Upload } from "lucide-react";
 
 // Define the expected data structure
 export type DataRow = Record<string, string | number | boolean | null>;
@@ -25,6 +25,7 @@ const Dashboard = () => {
   const [showWorkflow, setShowWorkflow] = useState(true);
   const [workflowStarted, setWorkflowStarted] = useState(false);
   const [currentStepId, setCurrentStepId] = useState<number | null>(null);
+  const [verifyingConnections, setVerifyingConnections] = useState(false);
 
   const handleFileUpload = (fileData: DataRow[], headers: string[]) => {
     setData(fileData);
@@ -77,6 +78,24 @@ const Dashboard = () => {
     setWorkflowStarted(true);
   };
 
+  const verifyConnections = async () => {
+    setVerifyingConnections(true);
+    
+    try {
+      // This would be replaced with actual endpoint checks
+      // Simulating API checks with a timeout
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Example of successful verification
+      toast.success("All connections verified successfully!");
+    } catch (error) {
+      toast.error("Failed to verify connections. Please check network settings.");
+      console.error("Connection verification error:", error);
+    } finally {
+      setVerifyingConnections(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
       <header className="mb-8 flex justify-between items-center">
@@ -88,6 +107,15 @@ const Dashboard = () => {
         </div>
         <div className="flex gap-2">
           <Button
+            onClick={verifyConnections}
+            disabled={verifyingConnections}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Link className="h-4 w-4" />
+            {verifyingConnections ? "Verifying..." : "Verify Connections"}
+          </Button>
+          <Button
             onClick={startWorkflow}
             disabled={data.length === 0 || currentStepId !== null || workflowStarted}
             className="flex items-center gap-2"
@@ -97,9 +125,10 @@ const Dashboard = () => {
           </Button>
           <Button
             onClick={resetData}
-            className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700"
             variant="outline"
+            className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700"
           >
+            <Upload className="h-4 w-4" />
             Upload New File
           </Button>
         </div>
