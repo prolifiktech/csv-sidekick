@@ -6,6 +6,7 @@ import DataTable from "./DataTable";
 import WorkflowProcessor from "./WorkflowProcessor";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 // Define the expected data structure
 export type DataRow = Record<string, string | number | boolean | null>;
@@ -56,13 +57,30 @@ const Dashboard = () => {
     return passesColumnFilters && passesSearch;
   });
 
+  const resetData = () => {
+    setData([]);
+    setColumns([]);
+    setFilters([]);
+    setSearchTerm("");
+  };
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">CSV Manager</h1>
-        <p className="text-gray-600 mt-2">
-          Upload and process CSV and Excel files easily
-        </p>
+      <header className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">CSV Manager</h1>
+          <p className="text-gray-600 mt-2">
+            Upload and process CSV and Excel files easily
+          </p>
+        </div>
+        {data.length > 0 && (
+          <Button
+            onClick={resetData}
+            className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition"
+          >
+            Upload New File
+          </Button>
+        )}
       </header>
 
       <FilterBar
@@ -87,17 +105,6 @@ const Dashboard = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-gray-700">Data Preview</h2>
-                <button
-                  onClick={() => {
-                    setData([]);
-                    setColumns([]);
-                    setFilters([]);
-                    setSearchTerm("");
-                  }}
-                  className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition"
-                >
-                  Upload New File
-                </button>
               </div>
               
               <DataTable data={filteredData} columns={columns} />
