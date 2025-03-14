@@ -3,6 +3,7 @@ import { useState } from "react";
 import FileDropZone from "./FileDropZone";
 import FilterBar from "./FilterBar";
 import DataTable from "./DataTable";
+import WorkflowProcessor from "./WorkflowProcessor";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -19,12 +20,14 @@ const Dashboard = () => {
   const [filters, setFilters] = useState<ColumnFilter[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showWorkflow, setShowWorkflow] = useState(false);
 
   const handleFileUpload = (fileData: DataRow[], headers: string[]) => {
     setData(fileData);
     setColumns(headers);
     setFilters([]);
     toast.success("File uploaded successfully!");
+    setShowWorkflow(true);
   };
 
   const handleFilterChange = (newFilters: ColumnFilter[]) => {
@@ -83,6 +86,7 @@ const Dashboard = () => {
                     setColumns([]);
                     setFilters([]);
                     setSearchTerm("");
+                    setShowWorkflow(false);
                   }}
                   className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition"
                 >
@@ -90,6 +94,7 @@ const Dashboard = () => {
                 </button>
               </div>
               <DataTable data={filteredData} columns={columns} />
+              <WorkflowProcessor data={data} isActive={showWorkflow} />
             </div>
           )}
         </CardContent>
