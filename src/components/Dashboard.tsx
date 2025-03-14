@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import FileDropZone from "./FileDropZone";
 import FilterBar from "./FilterBar";
@@ -20,7 +19,7 @@ const Dashboard = () => {
   const [filters, setFilters] = useState<ColumnFilter[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showWorkflow, setShowWorkflow] = useState(false);
+  const [showWorkflow, setShowWorkflow] = useState(true);
 
   const handleFileUpload = (fileData: DataRow[], headers: string[]) => {
     setData(fileData);
@@ -86,7 +85,6 @@ const Dashboard = () => {
                     setColumns([]);
                     setFilters([]);
                     setSearchTerm("");
-                    setShowWorkflow(false);
                   }}
                   className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition"
                 >
@@ -95,17 +93,15 @@ const Dashboard = () => {
               </div>
               
               <DataTable data={filteredData} columns={columns} />
-              
-              {/* Always render WorkflowProcessor when data exists */}
-              {data.length > 0 && (
-                <Card className="mt-6 border border-gray-200 shadow-sm">
-                  <CardContent className="p-6">
-                    <WorkflowProcessor data={data} isActive={true} />
-                  </CardContent>
-                </Card>
-              )}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Always render WorkflowProcessor regardless of data presence */}
+      <Card className="mt-6 border border-gray-200 shadow-sm">
+        <CardContent className="p-6">
+          <WorkflowProcessor data={data} isActive={showWorkflow} />
         </CardContent>
       </Card>
     </div>

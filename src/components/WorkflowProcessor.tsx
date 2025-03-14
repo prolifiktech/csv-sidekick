@@ -45,7 +45,7 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
 
   // Simulate processing for a specific step
   const processStep = async (stepId: number) => {
-    if (!data.length) {
+    if (data.length === 0) {
       toast.error("No data available. Please upload a file first.");
       return;
     }
@@ -162,7 +162,7 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
           {!workflowStarted ? (
             <Button 
               onClick={startWorkflow} 
-              disabled={!data.length || currentStepId !== null}
+              disabled={data.length === 0 || currentStepId !== null}
               className="flex items-center gap-2"
             >
               <Play className="h-4 w-4" />
@@ -177,7 +177,7 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
           )}
         </div>
         
-        {workflowStarted && (
+        {workflowStarted || true ? (
           <div className="grid gap-4 mt-4">
             {steps.map((step) => (
               <Card key={step.id} className={cn(
@@ -213,7 +213,7 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
                           variant="outline" 
                           size="sm" 
                           onClick={() => rerunStep(step.id)}
-                          disabled={currentStepId !== null}
+                          disabled={currentStepId !== null || data.length === 0}
                           className="flex items-center gap-1"
                         >
                           <RefreshCw className="h-3 w-3" />
@@ -226,7 +226,7 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
               </Card>
             ))}
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
