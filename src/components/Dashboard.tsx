@@ -109,7 +109,7 @@ const Dashboard = () => {
           <Button
             onClick={verifyConnections}
             disabled={verifyingConnections}
-            variant="outline"
+            variant="blue"
             className="flex items-center gap-2"
           >
             <Link className="h-4 w-4" />
@@ -118,6 +118,7 @@ const Dashboard = () => {
           <Button
             onClick={startWorkflow}
             disabled={data.length === 0 || currentStepId !== null || workflowStarted}
+            variant="green"
             className="flex items-center gap-2"
           >
             <Play className="h-4 w-4" />
