@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import FileDropZone from "./FileDropZone";
 import FilterBar from "./FilterBar";
@@ -70,6 +71,13 @@ const Dashboard = () => {
         onSearchChange={handleSearchChange}
         searchTerm={searchTerm}
       />
+      
+      {/* Display workflow processor first, above the upload box */}
+      <Card className="mt-6 border border-gray-200 shadow-sm">
+        <CardContent className="p-6">
+          <WorkflowProcessor data={data} isActive={showWorkflow} />
+        </CardContent>
+      </Card>
 
       <Card className="mt-6 bg-white shadow-sm border-gray-200">
         <CardContent className="p-6">
@@ -95,13 +103,6 @@ const Dashboard = () => {
               <DataTable data={filteredData} columns={columns} />
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Always render WorkflowProcessor regardless of data presence */}
-      <Card className="mt-6 border border-gray-200 shadow-sm">
-        <CardContent className="p-6">
-          <WorkflowProcessor data={data} isActive={showWorkflow} />
         </CardContent>
       </Card>
     </div>
