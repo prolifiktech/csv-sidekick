@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, CheckCircle, RefreshCw, AlertCircle, Circle } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 // Define the workflow step states
 type StepStatus = "idle" | "running" | "completed" | "failed";
@@ -186,36 +186,29 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
           )}
         </div>
         
-        {/* Horizontal Workflow Progress Steps */}
+        {/* Horizontal Workflow Progress Steps with Connected Lines */}
         <div className="mb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between relative">
+            {/* Continuous connector line across all steps */}
+            <div className="absolute top-4 left-0 right-0 h-1 bg-gray-200 z-0"></div>
+            
+            {/* Completed progress line */}
+            <div 
+              className="absolute top-4 left-0 h-1 bg-green-500 z-0 transition-all duration-300" 
+              style={{ 
+                width: `${steps.filter(step => step.status === "completed").length / steps.length * 100}%` 
+              }}
+            ></div>
+            
+            {/* Step circles positioned on top of the line */}
             {steps.map((step, index) => (
-              <div key={step.id} className="flex flex-col items-center">
-                {/* Step circles with connector lines */}
-                <div className="flex items-center">
-                  {/* Connector line before (not for first step) */}
-                  {index > 0 && (
-                    <div className={cn(
-                      "h-1 w-16 -ml-8",
-                      steps[index-1].status === "completed" ? "bg-green-500" : "bg-gray-200"
-                    )}></div>
-                  )}
-                  
-                  {/* Circle with number or icon */}
-                  <div className={cn(
-                    "flex items-center justify-center w-8 h-8 rounded-full shrink-0",
-                    getStepBackground(step)
-                  )}>
-                    {step.status === "idle" ? step.id : getStatusIcon(step.status, true)}
-                  </div>
-                  
-                  {/* Connector line after (not for last step) */}
-                  {index < steps.length - 1 && (
-                    <div className={cn(
-                      "h-1 w-16 -mr-8",
-                      step.status === "completed" ? "bg-green-500" : "bg-gray-200"
-                    )}></div>
-                  )}
+              <div key={step.id} className="flex flex-col items-center z-10">
+                {/* Circle with number or icon */}
+                <div className={cn(
+                  "flex items-center justify-center w-8 h-8 rounded-full shrink-0",
+                  getStepBackground(step)
+                )}>
+                  {step.status === "idle" ? step.id : getStatusIcon(step.status, true)}
                 </div>
                 
                 {/* Step name below circle */}
