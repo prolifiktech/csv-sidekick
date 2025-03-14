@@ -65,14 +65,12 @@ const Dashboard = () => {
         </p>
       </header>
 
-      {data.length > 0 && (
-        <FilterBar
-          columns={columns}
-          onFilterChange={handleFilterChange}
-          onSearchChange={handleSearchChange}
-          searchTerm={searchTerm}
-        />
-      )}
+      <FilterBar
+        columns={columns}
+        onFilterChange={handleFilterChange}
+        onSearchChange={handleSearchChange}
+        searchTerm={searchTerm}
+      />
 
       <Card className="mt-6 bg-white shadow-sm border-gray-200">
         <CardContent className="p-6">
@@ -96,7 +94,7 @@ const Dashboard = () => {
                 </button>
               </div>
               <DataTable data={filteredData} columns={columns} />
-              {showWorkflow && <WorkflowProcessor data={data} isActive={true} />}
+              <WorkflowProcessor data={data} isActive={showWorkflow} />
             </div>
           )}
         </CardContent>
