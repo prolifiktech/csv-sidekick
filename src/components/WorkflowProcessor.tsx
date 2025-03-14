@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Play, CheckCircle, RefreshCw, AlertCircle } from "lucide-react";
+import { Play, CheckCircle, RefreshCw, AlertCircle, Circle, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -132,101 +132,128 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
     processStep(stepId);
   };
 
-  // Get status color
-  const getStatusColor = (status: StepStatus) => {
-    switch (status) {
-      case "completed": return "bg-green-500";
-      case "running": return "bg-blue-500";
-      case "failed": return "bg-red-500";
-      default: return "bg-gray-200";
-    }
-  };
-
-  // Get status icon
-  const getStatusIcon = (status: StepStatus) => {
-    switch (status) {
-      case "completed": return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case "running": return <RefreshCw className="h-5 w-5 text-blue-500 animate-spin" />;
-      case "failed": return <AlertCircle className="h-5 w-5 text-red-500" />;
-      default: return null;
-    }
-  };
-
   if (!isActive) return null;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col space-y-2">
+    <div className="space-y-6">
+      <div className="flex flex-col space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-700">Data Processing Workflow</h2>
-          {!workflowStarted ? (
-            <Button 
-              onClick={startWorkflow} 
-              disabled={data.length === 0 || currentStepId !== null}
-              className="flex items-center gap-2"
-            >
-              <Play className="h-4 w-4" />
-              Start Processing
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Overall Progress:</span>
-              <Progress value={overallProgress} className="w-36 h-2" />
-              <span className="text-sm text-gray-500">{overallProgress}%</span>
-            </div>
-          )}
+          
+          <Button 
+            onClick={startWorkflow} 
+            disabled={data.length === 0 || currentStepId !== null}
+            className="flex items-center gap-2"
+          >
+            <Play className="h-4 w-4" />
+            Start Processing
+          </Button>
         </div>
         
-        {workflowStarted || true ? (
-          <div className="grid gap-4 mt-4">
-            {steps.map((step) => (
-              <Card key={step.id} className={cn(
-                "border-l-4",
-                step.status === "completed" ? "border-l-green-500" : 
-                step.status === "running" ? "border-l-blue-500" :
-                step.status === "failed" ? "border-l-red-500" :
-                "border-l-gray-200"
-              )}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0">
-                        {getStatusIcon(step.status)}
-                      </div>
-                      <div>
-                        <h3 className="font-medium">{step.name}</h3>
-                        <p className="text-sm text-gray-500">{step.description}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex flex-col items-end">
-                        <div className="w-24">
-                          <Progress 
-                            value={step.progress} 
-                            className={cn("h-1.5", getStatusColor(step.status))} 
-                          />
-                        </div>
-                        <span className="text-xs text-gray-500 mt-1">{step.progress}%</span>
-                      </div>
-                      {(step.status === "failed" || step.status === "completed") && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => rerunStep(step.id)}
-                          disabled={currentStepId !== null || data.length === 0}
-                          className="flex items-center gap-1"
-                        >
-                          <RefreshCw className="h-3 w-3" />
-                          Rerun
-                        </Button>
-                      )}
-                    </div>
+        {/* New progress indicator similar to the image */}
+        <div className="mt-6 mb-8">
+          <div className="flex items-center justify-between">
+            {steps.map((step, index) => (
+              <div key={step.id} className="flex items-center flex-1">
+                {/* Step circle */}
+                <div 
+                  className={cn(
+                    "relative flex items-center justify-center w-12 h-12 rounded-full text-white text-sm font-medium transition-all duration-200",
+                    step.status === "completed" ? "bg-blue-600" : 
+                    step.status === "running" ? "bg-blue-500" : 
+                    step.status === "failed" ? "bg-red-500" : 
+                    "bg-gray-200 text-gray-600"
+                  )}
+                >
+                  {step.status === "completed" ? (
+                    <CheckCircle className="h-6 w-6" />
+                  ) : (
+                    <span>{step.id}</span>
+                  )}
+                </div>
+                
+                {/* Step name below circle */}
+                <div className="absolute mt-14 text-xs font-medium text-center w-24 -ml-6">
+                  {step.name}
+                </div>
+                
+                {/* Connector line */}
+                {index < steps.length - 1 && (
+                  <div className="flex-1 h-0.5 mx-2 relative">
+                    <div className={cn(
+                      "absolute inset-0 transition-all duration-300",
+                      steps[index].status === "completed" ? "bg-blue-600" : "bg-gray-200"
+                    )}></div>
                   </div>
-                </CardContent>
-              </Card>
+                )}
+              </div>
             ))}
           </div>
-        ) : null}
+        </div>
+
+        {/* Step details cards */}
+        <div className="grid gap-4 mt-16">
+          {steps.map((step) => (
+            <Card key={step.id} className={cn(
+              "border-l-4",
+              step.status === "completed" ? "border-l-green-500" : 
+              step.status === "running" ? "border-l-blue-500" :
+              step.status === "failed" ? "border-l-red-500" :
+              "border-l-gray-200"
+            )}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex-shrink-0">
+                      {step.status === "completed" && <CheckCircle className="h-5 w-5 text-green-500" />}
+                      {step.status === "running" && <RefreshCw className="h-5 w-5 text-blue-500 animate-spin" />}
+                      {step.status === "failed" && <AlertCircle className="h-5 w-5 text-red-500" />}
+                      {step.status === "idle" && <Circle className="h-5 w-5 text-gray-300" />}
+                    </div>
+                    <div>
+                      <h3 className="font-medium">{step.name}</h3>
+                      <p className="text-sm text-gray-500">{step.description}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex flex-col items-end">
+                      <div className="w-24">
+                        <Progress 
+                          value={step.progress} 
+                          className={cn(
+                            "h-1.5", 
+                            step.status === "completed" ? "bg-green-100" : 
+                            step.status === "running" ? "bg-blue-100" :
+                            step.status === "failed" ? "bg-red-100" :
+                            "bg-gray-100",
+                            "[&>div]:transition-all [&>div]:duration-300",
+                            step.status === "completed" ? "[&>div]:bg-green-500" : 
+                            step.status === "running" ? "[&>div]:bg-blue-500" :
+                            step.status === "failed" ? "[&>div]:bg-red-500" :
+                            "[&>div]:bg-gray-300"
+                          )} 
+                        />
+                      </div>
+                      <span className="text-xs text-gray-500 mt-1">{step.progress}%</span>
+                    </div>
+                    {(step.status === "failed" || step.status === "completed") && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => rerunStep(step.id)}
+                        disabled={currentStepId !== null || data.length === 0}
+                        className="flex items-center gap-1"
+                      >
+                        <RefreshCw className="h-3 w-3" />
+                        Rerun
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
