@@ -194,14 +194,14 @@ const WorkflowProcessor = ({
         {/* Horizontal Workflow Progress Steps with Connected Lines */}
         <div className="mb-6">
           <div className="flex items-center justify-between relative">
-            {/* Continuous connector line across all steps */}
-            <div className="absolute top-4 left-0 right-0 h-1 bg-gray-200 z-0"></div>
+            {/* Continuous connector line with proper inset */}
+            <div className="absolute top-4 left-[2rem] right-[2rem] h-1 bg-gray-200 z-0"></div>
             
-            {/* Completed progress line */}
+            {/* Completed progress line with proper inset */}
             <div 
-              className="absolute top-4 left-0 h-1 bg-green-500 z-0 transition-all duration-300" 
+              className="absolute top-4 left-[2rem] h-1 bg-green-500 z-0 transition-all duration-300" 
               style={{ 
-                width: `${steps.filter(step => step.status === "completed").length / steps.length * 100}%` 
+                width: `${steps.filter(step => step.status === "completed").length / steps.length * (100 - (100/steps.length))}%` 
               }}
             ></div>
             
