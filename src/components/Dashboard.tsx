@@ -134,15 +134,8 @@ const Dashboard = () => {
           </Button>
         </div>
       </header>
-
-      <FilterBar
-        columns={columns}
-        onFilterChange={handleFilterChange}
-        onSearchChange={handleSearchChange}
-        searchTerm={searchTerm}
-      />
       
-      {/* Display workflow processor first, above the upload box */}
+      {/* Display workflow processor first, above everything */}
       <Card className="mt-6 border border-gray-200 shadow-sm">
         <CardContent className="p-6">
           <WorkflowProcessor 
@@ -154,6 +147,16 @@ const Dashboard = () => {
           />
         </CardContent>
       </Card>
+
+      {/* Moved FilterBar here between workflow and data */}
+      <div className="mt-6">
+        <FilterBar
+          columns={columns}
+          onFilterChange={handleFilterChange}
+          onSearchChange={handleSearchChange}
+          searchTerm={searchTerm}
+        />
+      </div>
 
       <Card className="mt-6 bg-white shadow-sm border-gray-200">
         <CardContent className="p-6">
