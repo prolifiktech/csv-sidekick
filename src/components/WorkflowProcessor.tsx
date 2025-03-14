@@ -1,7 +1,7 @@
+
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Play, CheckCircle, RefreshCw, AlertCircle, Circle } from "lucide-react";
+import { CheckCircle, RefreshCw, AlertCircle, Circle } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
@@ -20,9 +20,18 @@ export interface WorkflowStep {
 interface WorkflowProcessorProps {
   data: any[];
   isActive: boolean;
+  workflowStarted: boolean;
+  onWorkflowComplete: () => void;
+  onStepChange: (stepId: number | null) => void;
 }
 
-const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
+const WorkflowProcessor = ({ 
+  data, 
+  isActive, 
+  workflowStarted, 
+  onWorkflowComplete,
+  onStepChange
+}: WorkflowProcessorProps) => {
   const [steps, setSteps] = useState<WorkflowStep[]>([
     { id: 1, name: "Data Validation", description: "Validating data format and integrity", status: "idle", progress: 0 },
     { id: 2, name: "Data Transformation", description: "Converting data to required format", status: "idle", progress: 0 },
@@ -31,7 +40,6 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
   ]);
   
   const [currentStepId, setCurrentStepId] = useState<number | null>(null);
-  const [workflowStarted, setWorkflowStarted] = useState(false);
   const [overallProgress, setOverallProgress] = useState(0);
 
   // Calculate overall progress
@@ -42,10 +50,25 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
     }
   }, [steps, workflowStarted]);
 
+  // Start workflow when workflowStarted prop changes
+  useEffect(() => {
+    if (workflowStarted && currentStepId === null) {
+      // Reset all steps
+      setSteps(prevSteps =>
+        prevSteps.map(step => ({
+          ...step,
+          status: "idle",
+          progress: 0
+        }))
+      );
+      processStep(1);
+    }
+  }, [workflowStarted]);
+
   // Simulate processing for a specific step
   const processStep = async (stepId: number) => {
     if (data.length === 0) {
-      toast.error("No data available. Please upload a file first.");
+      onWorkflowComplete();
       return;
     }
 
@@ -54,6 +77,7 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
 
     // Update the current step
     setCurrentStepId(stepId);
+    onStepChange(stepId);
     
     // Set the step status to running
     setSteps(prevSteps => {
@@ -102,28 +126,18 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
       
       if (allPreviousCompleted) {
         setCurrentStepId(nextStepId);
+        onStepChange(nextStepId);
         processStep(nextStepId);
       } else {
         setCurrentStepId(null);
+        onStepChange(null);
+        onWorkflowComplete();
       }
     } else {
       setCurrentStepId(null);
+      onStepChange(null);
+      onWorkflowComplete();
     }
-  };
-
-  // Start the workflow from the beginning
-  const startWorkflow = () => {
-    // Reset all steps
-    setSteps(prevSteps =>
-      prevSteps.map(step => ({
-        ...step,
-        status: "idle",
-        progress: 0
-      }))
-    );
-    
-    setWorkflowStarted(true);
-    processStep(1);
   };
 
   // Rerun a specific step
@@ -168,16 +182,7 @@ const WorkflowProcessor = ({ data, isActive }: WorkflowProcessorProps) => {
       <div className="flex flex-col space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-700">Data Processing Workflow</h2>
-          {!workflowStarted ? (
-            <Button 
-              onClick={startWorkflow} 
-              disabled={data.length === 0 || currentStepId !== null}
-              className="flex items-center gap-2"
-            >
-              <Play className="h-4 w-4" />
-              Start Processing
-            </Button>
-          ) : (
+          {workflowStarted && (
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500">Overall Progress:</span>
               <Progress value={overallProgress} className="w-36 h-2" />

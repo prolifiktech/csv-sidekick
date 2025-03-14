@@ -7,6 +7,7 @@ import WorkflowProcessor from "./WorkflowProcessor";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Play } from "lucide-react";
 
 // Define the expected data structure
 export type DataRow = Record<string, string | number | boolean | null>;
@@ -22,6 +23,8 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showWorkflow, setShowWorkflow] = useState(true);
+  const [workflowStarted, setWorkflowStarted] = useState(false);
+  const [currentStepId, setCurrentStepId] = useState<number | null>(null);
 
   const handleFileUpload = (fileData: DataRow[], headers: string[]) => {
     setData(fileData);
@@ -62,6 +65,16 @@ const Dashboard = () => {
     setColumns([]);
     setFilters([]);
     setSearchTerm("");
+    setWorkflowStarted(false);
+    setCurrentStepId(null);
+  };
+
+  const startWorkflow = () => {
+    if (data.length === 0) {
+      toast.error("No data available. Please upload a file first.");
+      return;
+    }
+    setWorkflowStarted(true);
   };
 
   return (
@@ -73,14 +86,23 @@ const Dashboard = () => {
             Upload and process CSV and Excel files easily
           </p>
         </div>
-        {data.length > 0 && (
+        <div className="flex gap-2">
+          <Button
+            onClick={startWorkflow}
+            disabled={data.length === 0 || currentStepId !== null || workflowStarted}
+            className="flex items-center gap-2"
+          >
+            <Play className="h-4 w-4" />
+            Start Processing
+          </Button>
           <Button
             onClick={resetData}
-            className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition"
+            className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700"
+            variant="outline"
           >
             Upload New File
           </Button>
-        )}
+        </div>
       </header>
 
       <FilterBar
@@ -93,7 +115,13 @@ const Dashboard = () => {
       {/* Display workflow processor first, above the upload box */}
       <Card className="mt-6 border border-gray-200 shadow-sm">
         <CardContent className="p-6">
-          <WorkflowProcessor data={data} isActive={showWorkflow} />
+          <WorkflowProcessor 
+            data={data} 
+            isActive={showWorkflow} 
+            workflowStarted={workflowStarted}
+            onWorkflowComplete={() => setWorkflowStarted(false)}
+            onStepChange={setCurrentStepId}
+          />
         </CardContent>
       </Card>
 
