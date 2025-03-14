@@ -100,8 +100,8 @@ const Dashboard = () => {
     <div className="container mx-auto px-4 py-6 max-w-7xl">
       <header className="mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-dark-gray">CSV Manager</h1>
-          <p className="text-medium-gray mt-2">
+          <h1 className="text-3xl font-bold text-gray-800">CSV Manager</h1>
+          <p className="text-gray-600 mt-2">
             Upload and process CSV and Excel files easily
           </p>
         </div>
@@ -109,7 +109,7 @@ const Dashboard = () => {
           <Button
             onClick={verifyConnections}
             disabled={verifyingConnections}
-            variant="custom"
+            variant="outline"
             className="flex items-center gap-2"
           >
             <Link className="h-4 w-4" />
@@ -118,7 +118,6 @@ const Dashboard = () => {
           <Button
             onClick={startWorkflow}
             disabled={data.length === 0 || currentStepId !== null || workflowStarted}
-            variant="dark-custom"
             className="flex items-center gap-2"
           >
             <Play className="h-4 w-4" />
@@ -127,7 +126,7 @@ const Dashboard = () => {
           <Button
             onClick={resetData}
             variant="outline"
-            className="flex items-center gap-2 border-gray-custom text-gray-custom hover:bg-light-gray/50"
+            className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700"
           >
             <Upload className="h-4 w-4" />
             Upload New File
@@ -143,7 +142,7 @@ const Dashboard = () => {
       />
       
       {/* Display workflow processor first, above the upload box */}
-      <Card className="mt-6 border border-gray-custom shadow-sm bg-light-gray/50">
+      <Card className="mt-6 border border-gray-200 shadow-sm">
         <CardContent className="p-6">
           <WorkflowProcessor 
             data={data} 
@@ -155,14 +154,14 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
-      <Card className="mt-6 bg-light-gray shadow-sm border-gray-custom">
+      <Card className="mt-6 bg-white shadow-sm border-gray-200">
         <CardContent className="p-6">
           {data.length === 0 ? (
             <FileDropZone onFileLoaded={handleFileUpload} isLoading={isLoading} setIsLoading={setIsLoading} />
           ) : (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-dark-gray">Data Preview</h2>
+                <h2 className="text-xl font-semibold text-gray-700">Data Preview</h2>
               </div>
               
               <DataTable data={filteredData} columns={columns} />

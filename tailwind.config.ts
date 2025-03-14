@@ -20,13 +20,6 @@ export default {
 		},
 		extend: {
 			colors: {
-				// Custom color palette
-				"dark-gray": "#1E201E",
-				"medium-gray": "#3C3D37",
-				"gray-custom": "#697565",
-				"light-gray": "#ECDFCC",
-				
-				// Update theme colors to use our palette
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
